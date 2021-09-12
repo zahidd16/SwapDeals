@@ -13,6 +13,7 @@ namespace SwapDeals.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Web;
 
     public partial class Advertisement
     {
@@ -36,11 +37,12 @@ namespace SwapDeals.Models
         [Display(Name = "Date")]
         public Nullable<System.DateTime> Date { get; set; }
         public Nullable<int> AdjustedValue { get; set; }
-        [Required]
+        
+        [Display(Name = "Upload image")]
         public string Images { get; set; }
-        [Required]
-        [DataType(DataType.Text)]
-        [Display(Name = "Date")]
+
+        public HttpPostedFileBase ImageFile { get; set; }
+
         public string ProductDescription { get; set; }
         public Nullable<int> PriorityStatus { get; set; }
         public Nullable<int> Payment { get; set; }

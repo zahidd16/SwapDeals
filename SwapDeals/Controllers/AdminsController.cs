@@ -14,6 +14,11 @@ namespace SwapDeals.Controllers
     {
         private SwapDealsDBEntities db = new SwapDealsDBEntities();
 
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         // GET: Admins
         public ActionResult Details()
         {

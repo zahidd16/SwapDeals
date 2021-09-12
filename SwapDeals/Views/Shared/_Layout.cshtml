@@ -24,11 +24,24 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
+                    @if (Session["user_id"] == null)
+                    {
+                        <li>@Html.ActionLink("About Us", "About", "Home")</li>
+                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                        <li>@Html.ActionLink("Sign In", "Login", "Users")</li>
+                        <li>@Html.ActionLink("Sign Up", "SignUp", "Users")</li>
 
-                    <li>@Html.ActionLink("About Us", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                    <li>@Html.ActionLink("Sign In", "Login", "Users")</li>
-                    <li>@Html.ActionLink("Sign Up", "SignUp", "Users")</li>
+
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("About Us", "About", "Home")</li>
+                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                        <li>@Html.ActionLink("Manage Profile", "Details", "Users")</li>
+                        <li>@Html.ActionLink("Log out", "Logout", "Users")</li>
+                        <li>@Html.ActionLink("Post Ad", "Create", "Advertisements")</li>
+
+                    }
                 </ul>
             </div>
         </div>
@@ -37,7 +50,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - Swap Deal</p>
+            <p>&copy; Swap Deal @DateTime.Now.Year - All Rights Reserved</p>
         </footer>
     </div>
 

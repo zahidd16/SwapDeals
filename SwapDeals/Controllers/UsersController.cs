@@ -13,6 +13,20 @@ namespace SwapDeals.Controllers
     public class UsersController : Controller
     {
         private SwapDealsDBEntities db = new SwapDealsDBEntities();
+        public ActionResult Index()
+        {
+            
+            using (db)
+            {
+               // if (Session["user_id"] != null)
+                  var ads = db.Advertisements.SqlQuery("Select *from Advertisements")
+                        .ToList<Advertisement>();
+                 return View(ads);
+            }
+          
+               
+           
+        }
 
         [HttpGet]
         public ActionResult SignUp()
@@ -74,7 +88,7 @@ namespace SwapDeals.Controllers
                 {
                     ViewBag.msg = "Log in successful";
                     Session["user_id"] = user.UserID;
-                    return RedirectToAction("Details");
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                     ViewBag.msg = "Log in failed";
@@ -83,7 +97,12 @@ namespace SwapDeals.Controllers
             return View();
         }
 
+        public ActionResult Logout()
+        {
 
+            Session["user_id"] = null;
+            return RedirectToAction("Login");
+        }
 
         protected override void Dispose(bool disposing)
         {
