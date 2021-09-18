@@ -169,6 +169,7 @@
       <DependentUpon>SDModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\TempAdmin.cs" />
+    <Compile Include="Models\TempAds.cs" />
     <Compile Include="Models\TempUser.cs" />
     <Compile Include="Models\User.cs">
       <DependentUpon>SDModel.tt</DependentUpon>
@@ -304,6 +305,9 @@
     <Content Include="Views\Advertisements\Create.cshtml" />
     <Content Include="Views\Advertisements\Details.cshtml" />
     <Content Include="Views\Advertisements\Index.cshtml" />
+    <Content Include="Views\Advertisements\Delete.cshtml" />
+    <Content Include="Views\Advertisements\Edit.cshtml" />
+    <Content Include="Views\Advertisements\Ads.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

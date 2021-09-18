@@ -76,6 +76,8 @@ namespace SwapDeals.Controllers
         [HttpGet]
         public ActionResult Login()
         {
+            if(Session["user_id"] !=null)
+            return RedirectToAction("Index", "Home");
             return View();
         }
         [HttpPost]

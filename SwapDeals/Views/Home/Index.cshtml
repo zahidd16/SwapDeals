@@ -96,14 +96,15 @@
                             <div class="hot-overlay">
                                 @if (Session["user_id"] == null)
                                 {
-                                    <button type="button" name="view" title="Details" onclick="alert('Login to continue')">Details</button>
+                                    
+                                    <input type="button" value="Details" class="btn btn-primary" onclick="alert('Login to continue')" />
 
                                 }
                                 else
                                 {
 
-                                    <a href="@Url.Action("Details/" + ad.AdID, "Advertisements")" style= "height:15px;width:20px">Details</a>
-                                   
+                                    <input type="button" value="Details" class="btn btn-primary" onclick="location.href = '@Url.Action("Details/" + ad.AdID, "Advertisements")'" />
+
 
                                 }
 

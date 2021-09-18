@@ -22,7 +22,7 @@ namespace SwapDeals.Controllers
         // GET: Admins
         public ActionResult Details()
         {
-            string adminEmail = Convert.ToString(Session["admin_email"]);
+            string adminEmail = Convert.ToString(Session["admin"]);
             var admin = db.Admins.Where(u => u.AdminEmail.Equals(adminEmail)).FirstOrDefault();
             if (admin == null)
             {
@@ -45,7 +45,7 @@ namespace SwapDeals.Controllers
                 if (ad != null)
                 {
                     ViewBag.msg = "Log in successful";
-                    Session["admin_email"] = ad.AdminEmail;
+                    Session["admin"] = ad.AdminEmail;
                     return RedirectToAction("Details");
                 }
                 else
