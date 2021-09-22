@@ -65,6 +65,16 @@ namespace SwapDeals.Controllers
         }
         public ActionResult Details()
         {
+            HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(-1));
+            HttpContext.Response.Cache.SetValidUntilExpires(false);
+            HttpContext.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            HttpContext.Response.Cache.SetNoStore();
+            HttpContext.Response.ExpiresAbsolute = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
+            HttpContext.Response.Expires = 0;
+            HttpContext.Response.Cache.AppendCacheExtension("no-store, no-cache, must-revalidate, proxy-revalidate, post-check=0, pre-check=0");
+            if (Session["user_id"] == null)
+                return RedirectToAction("Index", "Home");
             int id = Convert.ToInt32(Session["user_id"]);
             var user = db.Users.Where(u => u.UserID == id).FirstOrDefault();
             if (user == null)
@@ -102,7 +112,17 @@ namespace SwapDeals.Controllers
         public ActionResult Logout()
         {
 
-            Session["user_id"] = null;
+            Session.Abandon();
+            //  Session.Clear();
+            HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(-1));
+            HttpContext.Response.Cache.SetValidUntilExpires(false);
+            HttpContext.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            HttpContext.Response.Cache.SetNoStore();
+            HttpContext.Response.ExpiresAbsolute = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
+            HttpContext.Response.Expires = 0;
+            HttpContext.Response.Cache.AppendCacheExtension("no-store, no-cache, must-revalidate, proxy-revalidate, post-check=0, pre-check=0");
+
             return RedirectToAction("Login");
         }
 

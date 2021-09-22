@@ -22,22 +22,22 @@ namespace SwapDeals.Models
         }
     
         public int ProductID { get; set; }
-        [Required]
+        
         [Display(Name ="Product Name")]
         [DataType(DataType.Text)]
         public string ProductName { get; set; }
-        [Required]
+        
         [Display(Name = "Product Price")]
         public decimal ProductPrice { get; set; }
-        [Required]
+        
         [Display(Name = "Product Details")]
         [DataType(DataType.Text)]
         public string ProductDetails { get; set; }
-        [Required]
+        
         [Display(Name = "Product Category")]
         [DataType(DataType.Text)]
         public string ProductCategory { get; set; }
-        [Required]
+        
         [Display(Name = "Brand")]
         [DataType(DataType.Text)]
         public string ProductBrand { get; set; }

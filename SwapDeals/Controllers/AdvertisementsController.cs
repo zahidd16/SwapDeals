@@ -18,6 +18,7 @@ namespace SwapDeals.Controllers
 
         public ActionResult Index()
         {
+
             if(Session["admin"]==null)
                 return RedirectToAction("Index", "Home");
             var advertisements = db.Advertisements.Include(a => a.Product).Include(a => a.User);
@@ -26,8 +27,19 @@ namespace SwapDeals.Controllers
        
         public ActionResult Details(int? id)
         {
+            HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(-1));
+            HttpContext.Response.Cache.SetValidUntilExpires(false);
+            HttpContext.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            HttpContext.Response.Cache.SetNoStore();
+            HttpContext.Response.ExpiresAbsolute = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
+            HttpContext.Response.Expires = 0;
+            HttpContext.Response.Cache.AppendCacheExtension("no-store, no-cache, must-revalidate, proxy-revalidate, post-check=0, pre-check=0");
             if (Session["user_id"] == null)
-                return RedirectToAction("Index", "Home");
+            {
+                if(Session["admin"] == null)
+                  return RedirectToAction("Index", "Home");
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -44,6 +56,14 @@ namespace SwapDeals.Controllers
         [HttpGet]
         public ActionResult Create()
         {
+            HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(-1));
+            HttpContext.Response.Cache.SetValidUntilExpires(false);
+            HttpContext.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            HttpContext.Response.Cache.SetNoStore();
+            HttpContext.Response.ExpiresAbsolute = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
+            HttpContext.Response.Expires = 0;
+            HttpContext.Response.Cache.AppendCacheExtension("no-store, no-cache, must-revalidate, proxy-revalidate, post-check=0, pre-check=0");
             if (Session["user_id"] == null)
                 return RedirectToAction("Index", "Home");
             return View();
@@ -53,7 +73,9 @@ namespace SwapDeals.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create( Advertisement ad)
         {
-           
+            if (Session["user_id"] == null)
+                return RedirectToAction("Index", "Home");
+
             if (ModelState.IsValid)
             {
                 ad.UserID = Convert.ToInt32(Session["user_id"]);
@@ -62,9 +84,32 @@ namespace SwapDeals.Controllers
                var pid = db.Products
                                    .SqlQuery("Select * from Products where ProductName = @id", new SqlParameter("@id",ad.SellingProduct))
                                     .FirstOrDefault();
+                if(pid==null)
+                {
+                    Product P = new Product();
+                    P.ProductName =ad.SellingProduct;
+                    P.ProductDetails = ad.ProductDescription;
+                    P.ProductPrice = 0;
+                    P.ProductBrand = "";
+                    P.ProductCategory = "";
+                    try
+                    {
+                        db.Products.Add(P);
+                        db.SaveChanges();
+                        pid = db.Products
+                                   .SqlQuery("Select * from Products where ProductName = @id", new SqlParameter("@id", ad.SellingProduct))
+                                    .FirstOrDefault();
+
+                    }
+                    catch(Exception e)
+                    {
+                        return Content(e.ToString());
+                    }
+
+                }
                 ad.ProductID = Convert.ToInt32(pid.ProductID);
               // ad.ProductID=
-                ad.PriorityStatus = 0;
+                ad.PriorityStatus = -1;
                 ad.Payment = 0;
                 string fileName = Path.GetFileNameWithoutExtension(ad.ImageFile.FileName);
                 string extension = Path.GetExtension(ad.ImageFile.FileName);
@@ -89,13 +134,22 @@ namespace SwapDeals.Controllers
 
 
         }
+        
         [HttpGet]
         public ActionResult Ads()
         {
+            HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(-1));
+            HttpContext.Response.Cache.SetValidUntilExpires(false);
+            HttpContext.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            HttpContext.Response.Cache.SetNoStore();
+            HttpContext.Response.ExpiresAbsolute = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
+            HttpContext.Response.Expires = 0;
+            HttpContext.Response.Cache.AppendCacheExtension("no-store, no-cache, must-revalidate, proxy-revalidate, post-check=0, pre-check=0");
             using (db)
             {
                
-                var ads = db.Advertisements.SqlQuery("Select *from Advertisements")
+                var ads = db.Advertisements.SqlQuery("Select *from Advertisements where PriorityStatus>-1")
                       .ToList<Advertisement>();
               
                 ViewData["Ads"] = ads;
@@ -125,6 +179,22 @@ namespace SwapDeals.Controllers
             }
              
              return View();
+        }
+        public ActionResult PostedAds()
+        {
+            HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(-1));
+            HttpContext.Response.Cache.SetValidUntilExpires(false);
+            HttpContext.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            HttpContext.Response.Cache.SetNoStore();
+            HttpContext.Response.ExpiresAbsolute = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
+            HttpContext.Response.Expires = 0;
+            HttpContext.Response.Cache.AppendCacheExtension("no-store, no-cache, must-revalidate, proxy-revalidate, post-check=0, pre-check=0");
+
+            if (Session["user_id"] == null)
+                return RedirectToAction("Index", "Home");
+            var a = db.Advertisements.SqlQuery("Select * from Advertisements where UserID = " + Convert.ToInt32(Session["user_id"])).ToList<Advertisement>();
+            return View("Index", a);
         }
         public ActionResult Edit(int? id)
         {

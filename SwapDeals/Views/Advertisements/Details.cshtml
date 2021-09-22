@@ -47,9 +47,9 @@
         </dt>
 
         <dd>
-         
-            <img src="@Url.Content(Model.Images)" class="img-fluid" alt="pic">
-             
+
+            <img src="@Url.Content(Model.Images)" class="img-fluid" alt="pic" height="350" width="350">
+
         </dd>
 
         <dt>
@@ -99,10 +99,51 @@
         <dd>
             @Html.DisplayFor(model => model.User.UserName)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User.UserEmail)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.UserEmail)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User.UserPhone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.UserPhone)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User.UserAdress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.UserAdress)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User.Rating)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.Rating)
+        </dd>
 
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.AdID }) |
-    @Html.ActionLink("Back to List", "Index")
+    @if (Session["admin"] != null)
+    {
+        
+        @Html.ActionLink("Edit", "Edit", new { id = Model.AdID }) 
+        @Html.ActionLink("Back to List", "Index")
+           
+}   
+else
+{
+  
+@Html.ActionLink("Back", "Ads")
+<input type="button" value="Book" class="btn btn-primary" onclick="location.href = '@Url.Action("Book/" + Model.AdID, "Bookings")'" />
+
+
+}
 </p>
