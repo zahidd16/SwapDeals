@@ -89,9 +89,21 @@
             @Html.DisplayFor(modelItem => item.User.UserName)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.AdID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.AdID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.AdID })
+            @if (Session["user_id"] != null)
+            {
+                @Html.ActionLink("Edit", "EditUserAd", new { id = item.AdID }) <h5> </h5>
+                <input type="button" value="Finish deal" class="btn btn-primary" onclick="location.href = '@Url.Action("FinishPostedDeal/" + item.AdID, "Deals")'" />
+
+            }
+            else
+            {
+                @Html.ActionLink("Edit", "EditAllAds", new { id = item.AdID })
+            }
+
+            | @Html.ActionLink("Details", "Details", new { id = item.AdID }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.AdID })
+
+
         </td>
     </tr>
 }

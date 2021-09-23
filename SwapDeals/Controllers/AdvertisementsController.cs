@@ -45,6 +45,23 @@ namespace SwapDeals.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Advertisement advertisement = db.Advertisements.Find(id);
+            if (Session["user_id"] != null)
+            {
+                var temp = db.Bookings.SqlQuery("Select * from Booking ").ToList<Booking>();
+                int flag = 0;
+                //  ValueTuple t1 = db.Database.ExecuteSqlCommand("Select *from Advertisements where AdID in (Select AdID from Booking)").
+                foreach (var b in temp)
+                {
+                    if(b.AdID==id)
+                    {
+                        flag = 1;
+                    }
+                }
+                ViewData["booked"] = flag;
+            }
+            else
+                ViewData["booked"] = 1;
+
             if (advertisement == null)
             {
                 return HttpNotFound();
@@ -196,10 +213,12 @@ namespace SwapDeals.Controllers
             var a = db.Advertisements.SqlQuery("Select * from Advertisements where UserID = " + Convert.ToInt32(Session["user_id"])).ToList<Advertisement>();
             return View("Index", a);
         }
-        public ActionResult Edit(int? id)
+        [HttpGet]
+        public ActionResult EditUserAd(int? id)
         {
-            if (Session["admin"] == null)
+            if (Session["user_id"] == null)
                 return RedirectToAction("Index", "Home");
+            Session["AdID"] = id;
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -209,30 +228,81 @@ namespace SwapDeals.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.ProductID = new SelectList(db.Products, "ProductID", "ProductName", advertisement.ProductID);
-            ViewBag.UserID = new SelectList(db.Users, "UserID", "UserName", advertisement.UserID);
+           
             return View(advertisement);
         }
-        // POST: Advertisements/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "AdID,ProductID,UserID,SellingProduct,TargatedProduct,Date,AdjustedValue,Images,ProductDescription,PriorityStatus,Payment,Warranty")] Advertisement advertisement)
+        public ActionResult EditUserAd(Advertisement advertisement)
+        {
+            if (Session["user_id"] == null)
+                return RedirectToAction("Index", "Home");
+            try 
+            {
+             
+                db.Database.ExecuteSqlCommand("Update Advertisements set TargatedProduct = '"+advertisement.TargatedProduct+"' , SellingProduct = '"+
+                   advertisement.SellingProduct +"' , Date = '"+advertisement.Date+" ' , Warranty = '"+advertisement.Warranty +
+                   "' , AdjustedValue = "+advertisement.AdjustedValue+" , ProductDescription = '"+advertisement.ProductDescription+"' where AdID = "+
+                   Convert.ToInt32(Session["AdID"]));
+                db.SaveChanges();
+                return RedirectToAction("PostedAds");
+            }
+            catch(Exception e)
+            {
+                return Content(e.ToString());
+            }
+           
+         
+        }
+        [HttpGet]
+        public ActionResult EditAllAds(int? id)
         {
             if (Session["admin"] == null)
                 return RedirectToAction("Index", "Home");
-            if (ModelState.IsValid)
+            if (id == null)
             {
-                db.Entry(advertisement).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ViewBag.ProductID = new SelectList(db.Products, "ProductID", "ProductName", advertisement.ProductID);
-            ViewBag.UserID = new SelectList(db.Users, "UserID", "UserName", advertisement.UserID);
+            Session["AdID"] = id;
+            Advertisement advertisement = db.Advertisements.Find(id);
+            if (advertisement == null)
+            {
+                return HttpNotFound();
+            }
+           
             return View(advertisement);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditAllAds(Advertisement advertisement)
+        {
+            if (Session["admin"] == null)
+                return RedirectToAction("Index", "Home");
+            int ps=-1;
+            if (advertisement.Payment == 0)
+                ps = 0;
+            else if (advertisement.Payment == 300)
+                ps = 1;
+            else if (advertisement.Payment == 500)
+                ps = 2;
+            try
+            {
+            
+                advertisement.PriorityStatus = ps;
+                db.Database.ExecuteSqlCommand("Update Advertisements set TargatedProduct = '" + advertisement.TargatedProduct + "' , SellingProduct = '" +
+                   advertisement.SellingProduct + "' , Date = '" + advertisement.Date + " ' , Warranty = '" + advertisement.Warranty +
+                   "' , AdjustedValue = " + advertisement.AdjustedValue + " , ProductDescription = '" + advertisement.ProductDescription + "' , PriorityStatus = "+
+                   ps+" , Payment = "+advertisement.Payment +" where AdID = " +Convert.ToInt32(Session["AdID"]));
+                db.SaveChanges();
+                return RedirectToAction("Index","Advertisements");
+            }
+            catch (Exception e)
+            {
+                return Content(e.ToString());
+            }
+        }
         // GET: Advertisements/Delete/5
         public ActionResult Delete(int? id)
         {

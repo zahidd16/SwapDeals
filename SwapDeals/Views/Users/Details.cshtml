@@ -1,13 +1,13 @@
 ﻿@model SwapDeals.Models.User
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "User Details";
 }
 
-<h2>Details</h2>
+
 
 <div>
-    <h4>User</h4>
+
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -24,14 +24,6 @@
 
         <dd>
             @Html.DisplayFor(model => model.UserEmail)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.UserPassword)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.UserPassword)
         </dd>
 
         <dt>
@@ -57,7 +49,11 @@
         <dd>
             @Html.DisplayFor(model => model.Rating)
         </dd>
-
     </dl>
+  =
+    <input type="button"  value="Update" class="btn btn-primary" onclick="location.href = '@Url.Action("Update/" + Model.UserID, "Users")'" />
+    =
+
+
 </div>
 

@@ -11,16 +11,26 @@ namespace SwapDeals.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Deal
     {
+        [Display(Name = "Deal ID")]
         public int DealID { get; set; }
+
+        [Display(Name = "User 1 ID")]
         public int UserID1 { get; set; }
+        [Display(Name = "User 2 ID")]
         public int UserID2 { get; set; }
+        [Display(Name = "Booking ID")]
         public int BookingID { get; set; }
+        [Display(Name = "User 1 Rating")]
         public int User1Rating { get; set; }
+        [Display(Name = "User 2 Rating")]
         public int User2Rating { get; set; }
+        [Display(Name = "Revenue")]
         public decimal Revenue { get; set; }
+        [Display(Name = "Location")]
         public string Location { get; set; }
         public Nullable<System.DateTime> Date { get; set; }
     

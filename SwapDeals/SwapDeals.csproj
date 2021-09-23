@@ -131,6 +131,7 @@
     <Compile Include="Controllers\AdminsController.cs" />
     <Compile Include="Controllers\AdvertisementsController.cs" />
     <Compile Include="Controllers\BookingsController.cs" />
+    <Compile Include="Controllers\DealsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
@@ -309,7 +310,7 @@
     <Content Include="Views\Advertisements\Details.cshtml" />
     <Content Include="Views\Advertisements\Index.cshtml" />
     <Content Include="Views\Advertisements\Delete.cshtml" />
-    <Content Include="Views\Advertisements\Edit.cshtml" />
+    <Content Include="Views\Advertisements\EditUserAd.cshtml" />
     <Content Include="Views\Advertisements\Ads.cshtml" />
     <Content Include="Views\Bookings\Book.cshtml" />
     <Content Include="Views\Bookings\Delete.cshtml" />
@@ -326,6 +327,12 @@
     <Content Include="Views\Messages\Details.cshtml" />
     <Content Include="Views\Messages\Index.cshtml" />
     <Content Include="Views\Bookings\BookedAds.cshtml" />
+    <Content Include="Views\Users\Update.cshtml" />
+    <Content Include="Views\Advertisements\EditAllAds.cshtml" />
+    <Content Include="Views\Deals\FinishPostedDeal.cshtml" />
+    <Content Include="Views\Deals\Details.cshtml" />
+    <Content Include="Views\Deals\Index.cshtml" />
+    <Content Include="Views\Deals\FinishBookedDeal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

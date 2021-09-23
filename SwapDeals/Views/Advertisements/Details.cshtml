@@ -1,7 +1,10 @@
-﻿@model SwapDeals.Models.Advertisement
+﻿@using SwapDeals.Models
+@model SwapDeals.Models.Advertisement
 
 @{
+   
     ViewBag.Title = "Details";
+    int f = (int)ViewData["Booked"];
 }
 
 <h2>Details</h2>
@@ -133,17 +136,19 @@
 <p>
     @if (Session["admin"] != null)
     {
-        
-        @Html.ActionLink("Edit", "Edit", new { id = Model.AdID }) 
-        @Html.ActionLink("Back to List", "Index")
-           
-}   
-else
-{
-  
-@Html.ActionLink("Back", "Ads")
-<input type="button" value="Book" class="btn btn-primary" onclick="location.href = '@Url.Action("Book/" + Model.AdID, "Bookings")'" />
 
+        @Html.ActionLink("Edit", "Edit", new { id = Model.AdID }) <h5> </h5>
+        @Html.ActionLink("Back to List", "Index") 
 
-}
+    }
+    else
+    {
+
+        @Html.ActionLink("Back", "Ads") <h5> </h5>
+        if (Convert.ToInt32(Session["user_id"]) != Model.UserID  && f==0)
+        {
+            <input type="button" value="Book" class="btn btn-primary" onclick="location.href = '@Url.Action("Book/" + Model.AdID, "Bookings")'" />
+        }
+
+    }
 </p>

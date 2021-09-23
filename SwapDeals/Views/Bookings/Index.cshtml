@@ -1,18 +1,16 @@
 ﻿@model IEnumerable<SwapDeals.Models.Booking>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Booked Ads";
 }
 
-<h2>Index</h2>
+<h2>Booked Ads</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.BookingStatus)
+            @Html.DisplayNameFor(model => model.BookingID)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Location)
@@ -32,7 +30,7 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.BookingStatus)
+            @Html.DisplayFor(modelItem => item.BookingID)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Location)

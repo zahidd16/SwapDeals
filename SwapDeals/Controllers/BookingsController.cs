@@ -79,6 +79,15 @@ namespace SwapDeals.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Book(Booking booking)
         {
+            HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(-1));
+            HttpContext.Response.Cache.SetValidUntilExpires(false);
+            HttpContext.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            HttpContext.Response.Cache.SetNoStore();
+            HttpContext.Response.ExpiresAbsolute = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
+            HttpContext.Response.Expires = 0;
+            HttpContext.Response.Cache.AppendCacheExtension("no-store, no-cache, must-revalidate, proxy-revalidate, post-check=0, pre-check=0");
+
             if (ModelState.IsValid)
             {
                 booking.BookingStatus = 1;
@@ -90,7 +99,6 @@ namespace SwapDeals.Controllers
                 db.Database.ExecuteSqlCommand("Update Advertisements set PriorityStatus = -2 where AdID = " +
                     Convert.ToInt32(Session["adID"]));
                 db.SaveChanges();
-                
                 return RedirectToAction("BookedAds","Bookings");
             }
 
@@ -149,7 +157,7 @@ namespace SwapDeals.Controllers
             int uid = Convert.ToInt32(Session["user_id"]);
             var b = db.Bookings.SqlQuery("Select * from Booking where UserID = "+uid).ToList<Booking>();
 
-            return View("Index",b);
+            return View(b);
         }
 
         // GET: Bookings/Delete/5
