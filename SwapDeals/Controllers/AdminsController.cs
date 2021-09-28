@@ -22,6 +22,16 @@ namespace SwapDeals.Controllers
         // GET: Admins
         public ActionResult Details()
         {
+            HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(-1));
+            HttpContext.Response.Cache.SetValidUntilExpires(false);
+            HttpContext.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            HttpContext.Response.Cache.SetNoStore();
+            HttpContext.Response.ExpiresAbsolute = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
+            HttpContext.Response.Expires = 0;
+            HttpContext.Response.Cache.AppendCacheExtension("no-store, no-cache, must-revalidate, proxy-revalidate, post-check=0, pre-check=0");
+            if (Session["admin"] == null)
+                return RedirectToAction("Index", "Home");
             string adminEmail = Convert.ToString(Session["admin"]);
             var admin = db.Admins.Where(u => u.AdminEmail.Equals(adminEmail)).FirstOrDefault();
             if (admin == null)
@@ -34,6 +44,16 @@ namespace SwapDeals.Controllers
         [HttpGet]
         public ActionResult Login()
         {
+            HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(-1));
+            HttpContext.Response.Cache.SetValidUntilExpires(false);
+            HttpContext.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            HttpContext.Response.Cache.SetNoStore();
+            HttpContext.Response.ExpiresAbsolute = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
+            HttpContext.Response.Expires = 0;
+            HttpContext.Response.Cache.AppendCacheExtension("no-store, no-cache, must-revalidate, proxy-revalidate, post-check=0, pre-check=0");
+            if (Session["admin"] != null)
+                return RedirectToAction("Details", "Admins");
             return View();
         }
         [HttpPost]

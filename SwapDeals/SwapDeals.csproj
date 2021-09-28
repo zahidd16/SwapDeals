@@ -333,6 +333,9 @@
     <Content Include="Views\Deals\Details.cshtml" />
     <Content Include="Views\Deals\Index.cshtml" />
     <Content Include="Views\Deals\FinishBookedDeal.cshtml" />
+    <Content Include="Views\Deals\Revenue.cshtml" />
+    <Content Include="Views\Users\Index.cshtml" />
+    <Content Include="Views\Users\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -4,7 +4,7 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Deals</h2>
 
 
 <table class="table">
@@ -15,32 +15,41 @@
         </th>
         <th>
             @Html.DisplayNameFor(model => model.BookingID)
-            <
+
         </th>
         <th>
             @Html.DisplayNameFor(model => model.UserID1)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.User1Rating)
-        </th>
+        @if (Session["admin"] != null)
+        {
+            <th>
+                @Html.DisplayNameFor(model => model.User1Rating)
+            </th>
+        }
         <th>
             @Html.DisplayNameFor(model => model.UserID2)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.User2Rating)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Revenue)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Location)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Date)
-        </th>
-      
-        <th></th>
-    </tr>
+        @if (Session["admin"] != null)
+        {
+            <th>
+                @Html.DisplayNameFor(model => model.User2Rating)
+            </th>
+        }
+        @if (Session["admin"] != null)
+        {
+            <th>
+                @Html.DisplayNameFor(model => model.Revenue)
+            </th>
+        }
+            <th>
+                @Html.DisplayNameFor(model => model.Location)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+
+            <th></th>
+        </tr>
 
 @foreach (var item in Model) {
 <tr>
@@ -53,28 +62,37 @@
     <td>
         @Html.DisplayFor(modelItem => item.UserID1)
     </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.User1Rating)
-    </td>
+    @if (Session["admin"] != null)
+    {
+        <td>
+            @Html.DisplayFor(modelItem => item.User1Rating)
+        </td>
+    }
     <td>
         @Html.DisplayFor(modelItem => item.UserID2)
     </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.User2Rating)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Revenue)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Location)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Date)
-    </td>
-    <td>
-        @Html.ActionLink("Details", "Details", new { id = item.DealID }) 
-    </td>
-</tr>
+    @if (Session["admin"] != null)
+    {
+        <td>
+            @Html.DisplayFor(modelItem => item.User2Rating)
+        </td>
+    }
+    @if (Session["admin"] != null)
+    {
+        <td>
+            @Html.DisplayFor(modelItem => item.Revenue)
+        </td>
+    }
+        <td>
+            @Html.DisplayFor(modelItem => item.Location)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Date)
+        </td>
+        <td>
+            @Html.ActionLink("Details", "Details", new { id = item.DealID })
+        </td>
+    </tr>
 }
 
 </table>

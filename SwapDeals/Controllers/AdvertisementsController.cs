@@ -126,7 +126,7 @@ namespace SwapDeals.Controllers
                 }
                 ad.ProductID = Convert.ToInt32(pid.ProductID);
               // ad.ProductID=
-                ad.PriorityStatus = -1;
+                ad.PriorityStatus = -2;
                 ad.Payment = 0;
                 string fileName = Path.GetFileNameWithoutExtension(ad.ImageFile.FileName);
                 string extension = Path.GetExtension(ad.ImageFile.FileName);
@@ -180,15 +180,20 @@ namespace SwapDeals.Controllers
         {
             if(ModelState.IsValid)
             {
+               
                 var ads = db.Advertisements.SqlQuery("Select *from Advertisements where TargatedProduct like '%"
-                    +ta.SellingProduct+"%' and SellingProduct like '%"+ta.TargatedProduct+"%'")
+                    +(ta.SellingProduct ?? "%")+"%' and SellingProduct like '%"+(ta.TargatedProduct ?? "%")+"%'")
                       .ToList<Advertisement>();
-                if(ads==null)
+                string t= "Select *from Advertisements where TargatedProduct like '%"
+                    + (ta.SellingProduct ?? "%") + "%' and SellingProduct like '%" + (ta.TargatedProduct ?? "%") + "%'";
+                System.Diagnostics.Debug.WriteLine(t); 
+                if (ads==null)
                 {
                     return RedirectToAction("Index","Home");
                 }
                 else
                 {
+                  
                     ViewData["Ads"] = ads;
                     return View();
                 }
@@ -210,7 +215,7 @@ namespace SwapDeals.Controllers
 
             if (Session["user_id"] == null)
                 return RedirectToAction("Index", "Home");
-            var a = db.Advertisements.SqlQuery("Select * from Advertisements where UserID = " + Convert.ToInt32(Session["user_id"])).ToList<Advertisement>();
+            var a = db.Advertisements.SqlQuery("Select * from Advertisements where UserID = " + Convert.ToInt32(Session["user_id"])+" and PriorityStatus >-1").ToList<Advertisement>();
             return View("Index", a);
         }
         [HttpGet]
@@ -280,7 +285,7 @@ namespace SwapDeals.Controllers
         {
             if (Session["admin"] == null)
                 return RedirectToAction("Index", "Home");
-            int ps=-1;
+            int ps=-2;
             if (advertisement.Payment == 0)
                 ps = 0;
             else if (advertisement.Payment == 300)

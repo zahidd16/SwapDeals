@@ -15,18 +15,22 @@ namespace SwapDeals.Controllers
         private SwapDealsDBEntities db = new SwapDealsDBEntities();
         public ActionResult Index()
         {
-            
-            using (db)
-            {
-               // if (Session["user_id"] != null)
-                  var ads = db.Advertisements.SqlQuery("Select *from Advertisements")
-                        .ToList<Advertisement>();
-                 return View(ads);
-            }
-          
-               
-           
+            HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(-1));
+            HttpContext.Response.Cache.SetValidUntilExpires(false);
+            HttpContext.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            HttpContext.Response.Cache.SetNoStore();
+            HttpContext.Response.ExpiresAbsolute = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
+            HttpContext.Response.Expires = 0;
+            HttpContext.Response.Cache.AppendCacheExtension("no-store, no-cache, must-revalidate, proxy-revalidate, post-check=0, pre-check=0");
+            if (Session["admin"] == null)
+                return RedirectToAction("Index", "Home");
+            return View(db.Users.ToList());
         }
+
+        // GET: Users/Details/5
+       
+
 
         [HttpGet]
         public ActionResult SignUp()
@@ -45,7 +49,7 @@ namespace SwapDeals.Controllers
                 }
                 else
                 {
-                    user.Rating = 0;
+                    user.Rating = 8;
                     try
                     {
                         db.Users.Add(user);
@@ -94,7 +98,7 @@ namespace SwapDeals.Controllers
             HttpContext.Response.ExpiresAbsolute = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
             HttpContext.Response.Expires = 0;
             HttpContext.Response.Cache.AppendCacheExtension("no-store, no-cache, must-revalidate, proxy-revalidate, post-check=0, pre-check=0");
-            if (Session["user_id"] == null)
+            if (Convert.ToInt32(Session["user_id"]) != id)
                 return RedirectToAction("Index", "Home");
             if (id == null)
             {
@@ -146,12 +150,46 @@ namespace SwapDeals.Controllers
                 var user = db.Users.Where(u => u.UserEmail.Equals(tempUser.UserEmail) && u.UserPassword.Equals(tempUser.UserPassword)).FirstOrDefault();
                 if (user != null)
                 {
-                    ViewBag.msg = "Log in successful";
-                    Session["user_id"] = user.UserID;
-                    return RedirectToAction("Index", "Home");
+                    //ratings
+                    var d1 = db.Deals.SqlQuery("Select * from Deals where UserID1 = " + user.UserID).ToList<Deal>();
+                    var d2 = db.Deals.SqlQuery("Select * from Deals where UserID2 = " + user.UserID).ToList<Deal>();
+                    int s = 0, c = 0;
+                    float r;
+                    bool check = false;
+                    foreach (var x in d1)
+                    {
+                        c++;
+                        s += x.User1Rating;
+                        check = true;
+                    }
+                    foreach (var y in d2)
+                    {
+                        c++;
+                        s += y.User2Rating;
+                        check = true;
+                    }
+                    r = (float)s / c;
+                    if (!check)
+                    {
+                        r = (float)user.Rating;
+                        // System.Diagnostics.Debug.WriteLine(user.Rating);
+
+                        System.Diagnostics.Debug.WriteLine(r);
+                    }
+                    if (r >= 3.5)
+                    {
+                        db.Database.ExecuteSqlCommand("Update Users set Rating = " + r + " where UserID = " + user.UserID);
+                        db.SaveChanges();
+                        ViewBag.msg = "Log in successful";
+                        Session["user_id"] = user.UserID;
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                        ViewBag.msg = "Your account has been disabled due to poor ratings. Contact admin";
+
                 }
                 else
-                    ViewBag.msg = "Log in failed";
+                    ViewBag.msg = "Wrong email or password";
             }
 
             return View();
@@ -174,7 +212,40 @@ namespace SwapDeals.Controllers
 
             return RedirectToAction("Login");
         }
+        public ActionResult Delete(int? id)
+        {
+            HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(-1));
+            HttpContext.Response.Cache.SetValidUntilExpires(false);
+            HttpContext.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            HttpContext.Response.Cache.SetNoStore();
+            HttpContext.Response.ExpiresAbsolute = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
+            HttpContext.Response.Expires = 0;
+            HttpContext.Response.Cache.AppendCacheExtension("no-store, no-cache, must-revalidate, proxy-revalidate, post-check=0, pre-check=0");
+            if (Session["admin"] == null)
+                return RedirectToAction("Index", "Home");
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            User user = db.Users.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(user);
+        }
 
+        // POST: Users/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            User user = db.Users.Find(id);
+            db.Users.Remove(user);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

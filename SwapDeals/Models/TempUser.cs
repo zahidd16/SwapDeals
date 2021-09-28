@@ -13,8 +13,6 @@ namespace SwapDeals.Models
         [Display(Name = "Email")]
         public string UserEmail { get; set; }
         [Required]
-        [MaxLength(15, ErrorMessage = "Maximum password length is 15")]
-        [MinLength(5, ErrorMessage = "Minimum password length is 5")]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string UserPassword { get; set; }

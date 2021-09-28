@@ -8,11 +8,11 @@ namespace SwapDeals.Models
 {
     public class TempAds
     {
-        [Required]
+        //[Required]
         [DataType(DataType.Text)]
         [Display(Name = "Target Product")]
         public string TargatedProduct { get; set; }
-        [Required]
+       // [Required]
         [DataType(DataType.Text)]
         [Display(Name = "Selling Product")]
         public string SellingProduct { get; set; }

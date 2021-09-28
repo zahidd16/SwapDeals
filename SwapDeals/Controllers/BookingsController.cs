@@ -63,6 +63,9 @@ namespace SwapDeals.Controllers
             }
             Session["adID"] = id;
             Advertisement advertisement = db.Advertisements.Find(id);
+            Booking b = db.Bookings.SqlQuery("Select * from Booking where AdID = " + id).FirstOrDefault();
+            if (b != null)
+                return RedirectToAction("Index", "Home");
             if (advertisement == null)
             {
                 return HttpNotFound();
@@ -72,9 +75,7 @@ namespace SwapDeals.Controllers
            
         }
 
-        // POST: Bookings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Book(Booking booking)
@@ -96,7 +97,7 @@ namespace SwapDeals.Controllers
                 booking.AdID = Convert.ToInt32(Session["adID"]);
                 db.Bookings.Add(booking);
                 db.SaveChanges();
-                db.Database.ExecuteSqlCommand("Update Advertisements set PriorityStatus = -2 where AdID = " +
+                db.Database.ExecuteSqlCommand("Update Advertisements set PriorityStatus = -1 where AdID = " +
                     Convert.ToInt32(Session["adID"]));
                 db.SaveChanges();
                 return RedirectToAction("BookedAds","Bookings");
@@ -155,7 +156,7 @@ namespace SwapDeals.Controllers
             if (Session["user_id"] == null)
                 return RedirectToAction("Index", "Home");
             int uid = Convert.ToInt32(Session["user_id"]);
-            var b = db.Bookings.SqlQuery("Select * from Booking where UserID = "+uid).ToList<Booking>();
+            var b = db.Bookings.SqlQuery("Select * from Booking where UserID = "+uid + " and BookingStatus = 1").ToList<Booking>();
 
             return View(b);
         }
