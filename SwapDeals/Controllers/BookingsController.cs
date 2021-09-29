@@ -18,25 +18,38 @@ namespace SwapDeals.Controllers
         public ActionResult Index()
         {
             if (Session["admin"] == null)
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             var bookings = db.Bookings.Include(b => b.Advertisement).Include(b => b.User);
             return View(bookings.ToList());
         }
-        
-       
+
+
 
         // GET: Bookings/Details/5
         public ActionResult Details(int? id)
         {
+            HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(-1));
+            HttpContext.Response.Cache.SetValidUntilExpires(false);
+            HttpContext.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            HttpContext.Response.Cache.SetNoStore();
+            HttpContext.Response.ExpiresAbsolute = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
+            HttpContext.Response.Expires = 0;
+            HttpContext.Response.Cache.AppendCacheExtension("no-store, no-cache, must-revalidate, proxy-revalidate, post-check=0, pre-check=0");
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Booking booking = db.Bookings.Find(id);
+
             if (booking == null)
             {
                 return HttpNotFound();
             }
+            if (booking.UserID != Convert.ToInt32(Session["user_id"]) && Session["admin"] == null)
+                return RedirectToAction("Index", "Home");
+
             return View(booking);
         }
 
@@ -108,40 +121,7 @@ namespace SwapDeals.Controllers
             return View(booking);
         }
 
-        // GET: Bookings/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Booking booking = db.Bookings.Find(id);
-            if (booking == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.AdID = new SelectList(db.Advertisements, "AdID", "SellingProduct", booking.AdID);
-            ViewBag.UserID = new SelectList(db.Users, "UserID", "UserName", booking.UserID);
-            return View(booking);
-        }
-
-        // POST: Bookings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "BookingID,BookingStatus,UserID,AdID,Location,Date")] Booking booking)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(booking).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.AdID = new SelectList(db.Advertisements, "AdID", "SellingProduct", booking.AdID);
-            ViewBag.UserID = new SelectList(db.Users, "UserID", "UserName", booking.UserID);
-            return View(booking);
-        }
+        
         public ActionResult BookedAds()
         {
             HttpContext.Response.Cache.SetExpires(DateTime.UtcNow.AddYears(-1));

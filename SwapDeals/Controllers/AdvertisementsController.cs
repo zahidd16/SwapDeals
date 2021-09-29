@@ -139,7 +139,7 @@ namespace SwapDeals.Controllers
                     {
                         db.Advertisements.Add(ad);
                         db.SaveChanges();
-                        return Content("Ad posted successfully");
+                        return Content("Ad posted successfully .Wait fo approval");
                     }
                     catch (Exception e)
                     {
@@ -185,7 +185,7 @@ namespace SwapDeals.Controllers
                     +(ta.SellingProduct ?? "%")+"%' and SellingProduct like '%"+(ta.TargatedProduct ?? "%")+"%'")
                       .ToList<Advertisement>();
                 string t= "Select *from Advertisements where TargatedProduct like '%"
-                    + (ta.SellingProduct ?? "%") + "%' and SellingProduct like '%" + (ta.TargatedProduct ?? "%") + "%'";
+                    + (ta.SellingProduct ?? "%") + "%' and SellingProduct like '%" + (ta.TargatedProduct ?? "%") + "%'" +" and PriorityStatus > -1";
                 System.Diagnostics.Debug.WriteLine(t); 
                 if (ads==null)
                 {
@@ -215,7 +215,7 @@ namespace SwapDeals.Controllers
 
             if (Session["user_id"] == null)
                 return RedirectToAction("Index", "Home");
-            var a = db.Advertisements.SqlQuery("Select * from Advertisements where UserID = " + Convert.ToInt32(Session["user_id"])+" and PriorityStatus >-1").ToList<Advertisement>();
+            var a = db.Advertisements.SqlQuery("Select * from Advertisements where UserID = " + Convert.ToInt32(Session["user_id"])+" and PriorityStatus >-2").ToList<Advertisement>();
             return View("Index", a);
         }
         [HttpGet]

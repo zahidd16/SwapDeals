@@ -28,6 +28,7 @@ namespace SwapDeals.Controllers
             if (Session["admin"] == null && Session["user_id"] == null)
                 return RedirectToAction("Index", "Home");
             var deals = db.Deals.Include(d => d.Booking).Include(d => d.User).Include(d => d.User1);
+ 
             if (Session["admin"] != null)
             {
 
@@ -51,11 +52,20 @@ namespace SwapDeals.Controllers
             HttpContext.Response.ExpiresAbsolute = DateTime.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
             HttpContext.Response.Expires = 0;
             HttpContext.Response.Cache.AppendCacheExtension("no-store, no-cache, must-revalidate, proxy-revalidate, post-check=0, pre-check=0");
+           // if (Session["user_id"] == null && Session["admin"] == null)
+               // return RedirectToAction("Home", "Index");
+            
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Deal deal = db.Deals.Find(id);
+            if (Convert.ToInt32(Session["user_id"]) !=deal.UserID1 && Convert.ToInt32(Session["user_id"]) != deal.UserID2
+                && Session["admin"] == null)
+                return RedirectToAction("Index", "Home");
+            var b = db.Bookings.Find(deal.BookingID);
+            var ad = db.Advertisements.Find(b.AdID);
+            ViewData["ad"] = ad;
             if (deal == null)
             {
                 return HttpNotFound();
