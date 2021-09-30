@@ -167,7 +167,7 @@ namespace SwapDeals.Controllers
                 Booking b = db.Bookings.SqlQuery("Select *from Booking where BookingID = " + id).FirstOrDefault();
                 if(b!=null)
                 {
-                    System.Diagnostics.Debug.WriteLine(b.UserID + " " + Convert.ToInt32(Session["user_id"]));
+                   // System.Diagnostics.Debug.WriteLine(b.UserID + " " + Convert.ToInt32(Session["user_id"]));
                     if (b.UserID != Convert.ToInt32(Session["user_id"]))
                         return Content("Access Denied");
                 } 

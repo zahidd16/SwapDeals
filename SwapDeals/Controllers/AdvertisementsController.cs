@@ -182,11 +182,11 @@ namespace SwapDeals.Controllers
             {
                
                 var ads = db.Advertisements.SqlQuery("Select *from Advertisements where TargatedProduct like '%"
-                    +(ta.SellingProduct ?? "%")+"%' and SellingProduct like '%"+(ta.TargatedProduct ?? "%")+"%'")
+                    +(ta.SellingProduct ?? "%")+"%' and SellingProduct like '%"+(ta.TargatedProduct ?? "%")+"%'"+ " and PriorityStatus > -1 ")
                       .ToList<Advertisement>();
-                string t= "Select *from Advertisements where TargatedProduct like '%"
-                    + (ta.SellingProduct ?? "%") + "%' and SellingProduct like '%" + (ta.TargatedProduct ?? "%") + "%'" +" and PriorityStatus > -1";
-                System.Diagnostics.Debug.WriteLine(t); 
+                //string t= "Select *from Advertisements where TargatedProduct like '%"
+                  //  + (ta.SellingProduct ?? "%") + "%' and SellingProduct like '%" + (ta.TargatedProduct ?? "%") + "%'" +" and PriorityStatus > -1";
+              //  System.Diagnostics.Debug.WriteLine(t); 
                 if (ads==null)
                 {
                     return RedirectToAction("Index","Home");

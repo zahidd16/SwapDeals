@@ -36,6 +36,7 @@ namespace SwapDeals.Models
         public string TargatedProduct { get; set; }
         [Display(Name = "Date")]
         public Nullable<System.DateTime> Date { get; set; }
+        [Display(Name = "Add / Pay (+ve Means buyer will add)")]
         public Nullable<int> AdjustedValue { get; set; }
         
         [Display(Name = "Upload image")]

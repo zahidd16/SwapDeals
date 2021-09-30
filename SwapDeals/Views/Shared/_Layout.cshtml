@@ -44,6 +44,7 @@
                     }
                     else if (Session["admin"] != null)
                     {
+                        <li>@Html.ActionLink("Products", "Index", "Products")</li>
                         <li>@Html.ActionLink("Ads", "Index", "Advertisements")</li>
                         <li>@Html.ActionLink("Bookings", "Index", "Bookings")</li>
                         <li>@Html.ActionLink("Finished Deals", "Index", "Deals")</li>
